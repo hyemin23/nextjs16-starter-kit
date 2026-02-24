@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Starter Kit
+
+Next.js 16 기반 풀스택 스타터킷입니다. 마케팅 페이지, 인증, 대시보드를 포함하며 바로 SaaS 개발을 시작할 수 있습니다.
+
+## Screenshots
+
+| 홈 | 로그인 | 회원가입 | 대시보드 |
+|:---:|:---:|:---:|:---:|
+| ![홈](home.png) | ![로그인](login.png) | ![회원가입](register.png) | ![대시보드](dashboard.png) |
+
+## Tech Stack
+
+| 카테고리 | 기술 |
+|----------|------|
+| **프레임워크** | Next.js 16 (App Router) |
+| **언어** | TypeScript (Strict Mode) |
+| **UI** | shadcn/ui, Radix UI, Lucide Icons |
+| **스타일링** | Tailwind CSS 4, CSS Variables (OKLCH) |
+| **폼** | React Hook Form + Zod |
+| **테마** | next-themes (다크모드 지원) |
+
+## Project Structure
+
+```
+app/
+├── (marketing)/     # 마케팅 페이지 (SiteHeader + SiteFooter)
+├── (auth)/          # 로그인/회원가입 (중앙 정렬, 네비게이션 없음)
+│   ├── login/
+│   └── register/
+├── (dashboard)/     # 대시보드 (Sidebar 레이아웃)
+│   └── dashboard/
+├── layout.tsx       # 루트 레이아웃 (ThemeProvider, Toaster)
+└── globals.css
+
+components/
+├── ui/              # shadcn/ui 컴포넌트
+├── marketing/       # site-header, site-footer, hero, features
+├── dashboard/       # app-sidebar, dashboard-header
+└── providers/       # ThemeProvider
+
+config/
+├── site.ts          # 네비게이션, 푸터 설정
+└── dashboard.ts     # 사이드바 메뉴 설정
+
+types/
+└── index.ts         # SiteConfig, NavItem, DashboardConfig
+```
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000)에서 확인할 수 있습니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| 명령어 | 설명 |
+|--------|------|
+| `npm run dev` | 개발 서버 실행 |
+| `npm run build` | 프로덕션 빌드 |
+| `npm run lint` | ESLint 실행 |
+| `npm start` | 프로덕션 서버 실행 |
 
-## Learn More
+## Architecture
 
-To learn more about Next.js, take a look at the following resources:
+### Route Groups
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+각 route group은 독립적인 `layout.tsx`를 가지며, 용도에 맞는 레이아웃을 제공합니다.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **`(marketing)`** — 공개 페이지. SiteHeader + SiteFooter로 감싸짐
+- **`(auth)`** — 인증 페이지. 중앙 정렬 레이아웃, 네비게이션 없음
+- **`(dashboard)`** — 인증 후 영역. SidebarProvider + AppSidebar 레이아웃
 
-## Deploy on Vercel
+### Config → Type → Component 패턴
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+설정 파일(`config/`)에서 네비게이션, 사이드바 메뉴를 정의하고, 타입(`types/`)으로 구조를 보장하며, 컴포넌트가 config를 매핑하여 자동 렌더링합니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+config/site.ts → types/index.ts → components/marketing/site-header.tsx
+config/dashboard.ts → types/index.ts → components/dashboard/app-sidebar.tsx
+```
+
+## License
+
+MIT
